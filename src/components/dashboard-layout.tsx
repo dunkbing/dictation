@@ -38,7 +38,7 @@ export function DashboardLayout({
 
   const navigation: NavItem[] = [
     {
-      name: "Practice",
+      name: "Topics",
       href: `/${lang}/practice`,
       icon: Headphones,
     },
@@ -86,35 +86,33 @@ export function DashboardLayout({
             </div>
           ))}
         </nav>
-        <div className="p-4 border-t">
+        <div className="p-4 border-t space-y-2">
           {!isCollapsed && (
-            <div className="mb-3 px-3">
+            <div className="mb-1 px-3">
               <p className="text-sm font-medium truncate">{email}</p>
             </div>
           )}
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onSignOut}
-            className={`w-full ${isCollapsed ? "justify-center px-0" : "justify-start"}`}
-            title={isCollapsed ? dict.common.signOut : undefined}
+          <div
+            className={isCollapsed ? "flex flex-col items-center gap-1" : "flex items-center gap-1"}
           >
-            <LogOut className={`w-5 h-5 ${isCollapsed ? "" : "mr-3"}`} />
-            {!isCollapsed && dict.common.signOut}
-          </Button>
+            <LanguageSwitcher currentLang={lang} />
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onSignOut}
+              className={isCollapsed ? "" : "flex-1 justify-start"}
+              size={isCollapsed ? "icon" : "default"}
+              title={dict.common.signOut}
+            >
+              <LogOut className={`w-5 h-5 ${isCollapsed ? "" : "mr-3"}`} />
+              {!isCollapsed && dict.common.signOut}
+            </Button>
+          </div>
         </div>
       </aside>
 
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header with tabs */}
-        <div className="h-16 border-b flex items-center px-4 gap-2">
-          <div className="ml-auto">
-            <LanguageSwitcher currentLang={lang} />
-          </div>
-        </div>
-
-        {/* Page content */}
         <main className="flex-1 overflow-auto p-6">{children}</main>
       </div>
     </div>

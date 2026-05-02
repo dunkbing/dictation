@@ -27,7 +27,7 @@ export default async function PracticeIndexPage({ params }: { params: Promise<{ 
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Practice</h1>
+          <h1 className="text-3xl font-bold">Topics</h1>
           <p className="text-muted-foreground">Pick a video to start dictation practice.</p>
         </div>
         {canCreate && <UploadVideoDialog />}
@@ -55,7 +55,7 @@ export default async function PracticeIndexPage({ params }: { params: Promise<{ 
               </CardHeader>
               <CardContent className="mt-auto flex gap-2">
                 <Button asChild size="sm" className="flex-1">
-                  <Link href={`/${lang as Locale}/dashboard/practice/${v.id}`}>
+                  <Link href={`/${lang as Locale}/practice/${v.id}`}>
                     <Play className="w-4 h-4 mr-1" /> Practice
                   </Link>
                 </Button>
