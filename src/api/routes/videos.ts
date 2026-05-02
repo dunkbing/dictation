@@ -58,7 +58,7 @@ export const videosRoute = new Hono<{ Variables: Variables }>()
       return c.json(scoreSentence(truth, input));
     },
   )
-  .get("/", requireAuth, async (c) => {
+  .get("/", async (c) => {
     const result = await getAllVideos();
     if (!result.success) return c.json({ error: result.error }, 500);
     return c.json({ videos: result.videos ?? [] });
@@ -97,7 +97,7 @@ export const videosRoute = new Hono<{ Variables: Variables }>()
       return c.json({ error: message }, 500);
     }
   })
-  .get("/:id", requireAuth, async (c) => {
+  .get("/:id", async (c) => {
     const id = Number.parseInt(c.req.param("id")!, 10);
     if (Number.isNaN(id)) return c.json({ error: "Invalid id" }, 400);
     const result = await getVideoById(id);

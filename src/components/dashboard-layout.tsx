@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Headphones, LogOut, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight, Headphones, LogIn, LogOut, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,7 @@ export function DashboardLayout({
   children: React.ReactNode;
   lang: Locale;
   dict: Dictionary;
-  email: string;
+  email: string | null;
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const router = useRouter();
@@ -39,14 +39,18 @@ export function DashboardLayout({
   const navigation: NavItem[] = [
     {
       name: "Topics",
-      href: `/${lang}/practice`,
+      href: `/${lang}/topics`,
       icon: Headphones,
     },
-    {
-      name: dict.users.title,
-      href: `/${lang}/users`,
-      icon: Users,
-    },
+    ...(email
+      ? [
+          {
+            name: dict.users.title,
+            href: `/${lang}/users`,
+            icon: Users,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -87,7 +91,7 @@ export function DashboardLayout({
           ))}
         </nav>
         <div className="p-4 border-t space-y-2">
-          {!isCollapsed && (
+          {!isCollapsed && email && (
             <div className="mb-1 px-3">
               <p className="text-sm font-medium truncate">{email}</p>
             </div>
@@ -96,17 +100,31 @@ export function DashboardLayout({
             className={isCollapsed ? "flex flex-col items-center gap-1" : "flex items-center gap-1"}
           >
             <LanguageSwitcher currentLang={lang} />
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={onSignOut}
-              className={isCollapsed ? "" : "flex-1 justify-start"}
-              size={isCollapsed ? "icon" : "default"}
-              title={dict.common.signOut}
-            >
-              <LogOut className={`w-5 h-5 ${isCollapsed ? "" : "mr-3"}`} />
-              {!isCollapsed && dict.common.signOut}
-            </Button>
+            {email ? (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={onSignOut}
+                className={isCollapsed ? "" : "flex-1 justify-start"}
+                size={isCollapsed ? "icon" : "default"}
+                title={dict.common.signOut}
+              >
+                <LogOut className={`w-5 h-5 ${isCollapsed ? "" : "mr-3"}`} />
+                {!isCollapsed && dict.common.signOut}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => router.push(`/${lang}/login`)}
+                className={isCollapsed ? "" : "flex-1 justify-start"}
+                size={isCollapsed ? "icon" : "default"}
+                title="Sign in"
+              >
+                <LogIn className={`w-5 h-5 ${isCollapsed ? "" : "mr-3"}`} />
+                {!isCollapsed && "Sign in"}
+              </Button>
+            )}
           </div>
         </div>
       </aside>

@@ -40,7 +40,7 @@ export default function LoginForm({ dict, lang }: { dict: Dictionary; lang: Loca
         setError(body.error ?? "Invalid credentials");
         return;
       }
-      redirect(`/${lang}/practice`);
+      redirect(`/${lang}/topics`);
     },
   });
   const isSubmitting = useStore(form.store, (state) => state.isSubmitting);

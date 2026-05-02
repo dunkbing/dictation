@@ -26,7 +26,7 @@ export default async function PracticePage({
             {body.error ?? "The video may not exist."}
           </p>
           <Button asChild>
-            <Link href={`/${lang as Locale}/dashboard/practice`}>Back to library</Link>
+            <Link href={`/${lang as Locale}/topics`}>Back to library</Link>
           </Button>
         </CardContent>
       </Card>

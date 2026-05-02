@@ -21,11 +21,11 @@ export default async function EditVideoPage({
   const ability = defineAbilityFor(allPermissions);
 
   if (!ability.can("update", "Video")) {
-    redirect(`/${lang}/dashboard/practice/${id}`);
+    redirect(`/${lang}/topics/${id}`);
   }
 
   const videoRes = await api.videos[":id"].$get({ param: { id } });
-  if (!videoRes.ok) redirect(`/${lang}/dashboard/practice`);
+  if (!videoRes.ok) redirect(`/${lang}/topics`);
   const { video } = await videoRes.json();
 
   return <EditVideoClient lang={lang as Locale} video={video} />;

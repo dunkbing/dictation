@@ -354,7 +354,7 @@ export default function EditVideoClient({ lang, video }: { lang: Locale; video: 
             Save changes
           </Button>
           <Button asChild variant="ghost">
-            <Link href={`/${lang}/practice/${meta.id}`}>Back</Link>
+            <Link href={`/${lang}/topics/${meta.id}`}>Back</Link>
           </Button>
         </div>
 

@@ -108,14 +108,15 @@ export default function PracticeClient({
     [active, input, revealed],
   );
 
-  const cleanCorrect =
-    wordStates.length > 0 && wordStates.every((s) => s.kind === "correct") && revealed.size === 0;
+  const allFinalized =
+    wordStates.length > 0 && wordStates.every((s) => s.kind === "correct" || s.kind === "revealed");
+  const cleanCorrect = allFinalized && revealed.size === 0;
 
   useEffect(() => {
-    if (active && cleanCorrect && !completed.has(active.index)) {
+    if (active && allFinalized && !completed.has(active.index)) {
       setCompleted((prev) => new Set(prev).add(active.index));
     }
-  }, [active, cleanCorrect, completed]);
+  }, [active, allFinalized, completed]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -265,7 +266,14 @@ export default function PracticeClient({
   }, [completed.size, sentences.length]);
 
   return (
-    <div className="grid grid-cols-[1fr_1.2fr_1fr] gap-4 h-[calc(100vh-8rem)]">
+    <div
+      className="grid grid-cols-[1fr_1.2fr_1fr] gap-4 h-[calc(100vh-8rem)]"
+      onMouseDown={(e) => {
+        const t = e.target as HTMLElement;
+        if (t.closest('textarea, input, [contenteditable="true"]')) return;
+        e.preventDefault();
+      }}
+    >
       {/* LEFT: Video */}
       <Card className="overflow-hidden flex flex-col">
         <CardHeader>
@@ -356,7 +364,7 @@ export default function PracticeClient({
               rows={3}
               autoFocus
               onKeyDown={(e) => {
-                if ((e.key === "Enter" || e.key === "Tab") && cleanCorrect) {
+                if ((e.key === "Enter" || e.key === "Tab") && allFinalized) {
                   e.preventDefault();
                   next();
                   return;

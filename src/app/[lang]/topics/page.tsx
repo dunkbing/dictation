@@ -55,13 +55,13 @@ export default async function PracticeIndexPage({ params }: { params: Promise<{ 
               </CardHeader>
               <CardContent className="mt-auto flex gap-2">
                 <Button asChild size="sm" className="flex-1">
-                  <Link href={`/${lang as Locale}/practice/${v.id}`}>
+                  <Link href={`/${lang as Locale}/topics/${v.id}`}>
                     <Play className="w-4 h-4 mr-1" /> Practice
                   </Link>
                 </Button>
                 {canEdit && (
                   <Button asChild size="sm" variant="outline">
-                    <Link href={`/${lang as Locale}/practice/${v.id}/edit`}>
+                    <Link href={`/${lang as Locale}/topics/${v.id}/edit`}>
                       <Pencil className="w-4 h-4" />
                     </Link>
                   </Button>
