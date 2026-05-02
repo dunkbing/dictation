@@ -1,0 +1,8 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "nextjs", "typescript", "import"],
+  "categories": {
+    "correctness": "error"
+  },
+  "ignorePatterns": ["node_modules", ".next", "dist", "build", "src/components/ui"]
+}
