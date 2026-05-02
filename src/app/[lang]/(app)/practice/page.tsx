@@ -2,7 +2,8 @@ import { Pencil, Play } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import type { SelectVideo } from "@/db/schema";
+import { UploadVideoDialog } from "@/components/upload-video-dialog";
+import type { SelectVideo } from "@/db/schema/videos";
 import { serverApiClient } from "@/lib/api-client.server";
 import { defineAbilityFor } from "@/lib/casl/ability";
 import type { Locale } from "@/lib/i18n/config";
@@ -20,18 +21,24 @@ export default async function PracticeIndexPage({ params }: { params: Promise<{ 
   const allPermissions = [...(me?.role?.permissions ?? []), ...customPermissions];
   const ability = defineAbilityFor(allPermissions);
   const canEdit = ability.can("update", "Video");
+  const canCreate = ability.can("create", "Video");
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Practice</h1>
-        <p className="text-muted-foreground">Pick a video to start dictation practice.</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Practice</h1>
+          <p className="text-muted-foreground">Pick a video to start dictation practice.</p>
+        </div>
+        {canCreate && <UploadVideoDialog />}
       </div>
 
       {videos.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
-            No videos yet. Run <code className="font-mono">bun run scrape-videos</code> to add some.
+            {canCreate
+              ? 'No videos yet. Click "Add video" to scrape one from YouTube.'
+              : "No videos yet."}
           </CardContent>
         </Card>
       ) : (
@@ -54,7 +61,7 @@ export default async function PracticeIndexPage({ params }: { params: Promise<{ 
                 </Button>
                 {canEdit && (
                   <Button asChild size="sm" variant="outline">
-                    <Link href={`/${lang as Locale}/dashboard/practice/${v.id}/edit`}>
+                    <Link href={`/${lang as Locale}/practice/${v.id}/edit`}>
                       <Pencil className="w-4 h-4" />
                     </Link>
                   </Button>

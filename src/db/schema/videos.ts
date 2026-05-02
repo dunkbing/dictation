@@ -16,6 +16,7 @@ export const videos = pgTable("videos", {
   thumbnailUrl: text("thumbnail_url"),
   addedBy: text("added_by").references(() => users.id, { onDelete: "set null" }),
   sentences: jsonb().$type<Sentence[]>().notNull().default([]),
+  tags: jsonb().$type<string[]>().notNull().default([]),
 });
 
 export type SelectVideo = typeof videos.$inferSelect;

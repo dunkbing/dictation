@@ -10,16 +10,26 @@ import {
   Save,
   SkipForward,
   Trash2,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { SelectVideo, Sentence } from "@/db/schema/videos";
 import { apiClient } from "@/lib/api-client";
 import type { Locale } from "@/lib/i18n/config";
+import { LEVEL_TAGS, TOPIC_TAGS, VIDEO_TAGS } from "@/lib/video-tags";
 import type { YTPlayer } from "@/lib/youtube-player";
 
 function formatTime(ms: number): string {
@@ -177,6 +187,16 @@ export default function EditVideoClient({ lang, video }: { lang: Locale; video: 
     });
   };
 
+  const toggleTag = (tag: string) => {
+    setMeta((prev) => {
+      const has = prev.tags.includes(tag);
+      return {
+        ...prev,
+        tags: has ? prev.tags.filter((t) => t !== tag) : [...prev.tags, tag],
+      };
+    });
+  };
+
   const move = (idx: number, dir: -1 | 1) => {
     setMeta((prev) => {
       const target = idx + dir;
@@ -202,6 +222,7 @@ export default function EditVideoClient({ lang, video }: { lang: Locale; video: 
         channel: meta.channel,
         thumbnailUrl: meta.thumbnailUrl || null,
         sentences: reindexed,
+        tags: meta.tags,
       },
     });
     setSaving(false);
@@ -266,6 +287,63 @@ export default function EditVideoClient({ lang, video }: { lang: Locale; video: 
           </CardContent>
         </Card>
 
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm">Tags ({meta.tags.length})</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-2 gap-2">
+              <Select value="" onValueChange={(v) => v && toggleTag(v)}>
+                <SelectTrigger size="sm" className="w-full">
+                  <SelectValue placeholder="Add topic..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {TOPIC_TAGS.filter((t) => !meta.tags.includes(t.value)).map((tag) => (
+                    <SelectItem key={tag.value} value={tag.value}>
+                      # {tag.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value="" onValueChange={(v) => v && toggleTag(v)}>
+                <SelectTrigger size="sm" className="w-full">
+                  <SelectValue placeholder="Add level..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {LEVEL_TAGS.filter((t) => !meta.tags.includes(t.value)).map((tag) => (
+                    <SelectItem key={tag.value} value={tag.value}>
+                      # {tag.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {meta.tags.length === 0 ? (
+              <p className="text-xs text-muted-foreground">No tags selected.</p>
+            ) : (
+              <div className="flex flex-wrap gap-1.5">
+                {meta.tags.map((value) => {
+                  const tag = VIDEO_TAGS.find((t) => t.value === value);
+                  return (
+                    <Badge key={value} variant="secondary" className="gap-1">
+                      # {tag?.label ?? value}
+                      <button
+                        type="button"
+                        onClick={() => toggleTag(value)}
+                        className="hover:text-destructive"
+                        aria-label={`Remove ${tag?.label ?? value}`}
+                      >
+                        <X className="size-3" />
+                      </button>
+                    </Badge>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <div className="flex gap-2">
           <Button onClick={save} disabled={saving} className="flex-1">
             {saving ? (
@@ -276,7 +354,7 @@ export default function EditVideoClient({ lang, video }: { lang: Locale; video: 
             Save changes
           </Button>
           <Button asChild variant="ghost">
-            <Link href={`/${lang}/dashboard/practice/${meta.id}`}>Back</Link>
+            <Link href={`/${lang}/practice/${meta.id}`}>Back</Link>
           </Button>
         </div>
 
@@ -411,14 +489,25 @@ export default function EditVideoClient({ lang, video }: { lang: Locale; video: 
                   >
                     ↦
                   </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => playClip(s)}
-                    className="h-7 px-2 text-xs"
-                    title="Play this clip"
-                  >
-                    <SkipForward className="w-3 h-3" />
-                  </Button>
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      onClick={() => playClip(s)}
+                      className="h-7 px-2 text-xs"
+                      title="Play this clip"
+                    >
+                      <SkipForward className="w-3 h-3" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => playerRef.current?.pauseVideo()}
+                      className="h-7 px-2 text-xs"
+                      title="Pause"
+                    >
+                      <Pause className="w-3 h-3" />
+                    </Button>
+                  </div>
                 </div>
 
                 <Textarea

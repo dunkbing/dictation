@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ChevronLeft,
-  ChevronRight,
-  Headphones,
-  LogOut,
-  Menu,
-  Users,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Headphones, LogOut, Menu, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
